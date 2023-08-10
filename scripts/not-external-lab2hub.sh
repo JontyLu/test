@@ -24,37 +24,40 @@ echo $sourceBranch
 filepath=""
 echo $filepath
 
-cacheDir=$filepath/builds
+workDir="/root/app"
 originDir="${originRepo#*/}"
-originDir=$cacheDir/"${originDir%.*}"
+originDir=$workDir/"${originDir%.*}"
 
 sourceDir="${sourceRepo#*/}"
 sourceDir="${sourceDir%.*}"
-sourceDir=$cacheDir/"${sourceDir}"
+sourceDir=$workDir/"${sourceDir}"
 
-workDir=`pwd`
-# workDir="/root/app"
+# workDir=`pwd`
 
 #存在工作目录，移除工作目录
-# if [ -d $cacheDir ];then
-    # rm -rf $cacheDir
-# fi
+if [ -d $workDir ];then
+    rm -rf $workDir
+fi
 
 # 重新创建目录
-mkdir -p $cacheDir
-cd $cacheDir
+mkdir -p $workDir
+cd $workDir
 
 # # 克隆仓库代码
-#git clone -b $originBranch --depth 1 ${originRepo}
+git clone -b $originBranch --depth 1 ${originRepo}
 git clone -b $sourceBranch --depth 1 ${sourceRepo}
 
 # 删除目标代码的除.git之外的代码
 echo "-----delete source dir-----"
 cd $sourceDir && ls | grep -v "^.git$" | xargs -I {} rm -rf {}
 
-cd $workDir
+cd $originDir
 pwd # 查看当前路径
 git branch # 查看当前分支
+
+# 安装包
+tnpm i
+
 # 若需要更新 npm 版本，运行更新脚本
 if [ $publishVersion ]; then
     node $workDir/scripts/release.js $publishVersion

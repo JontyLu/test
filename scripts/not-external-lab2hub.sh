@@ -60,7 +60,7 @@ tnpm i
 
 # 若需要更新 npm 版本，运行更新脚本
 if [ $publishVersion ]; then
-    node $workDir/scripts/release.js $publishVersion
+    node $originDir/scripts/release.js $publishVersion
     # git add .
     # git commit -m "feat: npm版本更新$publishVersion"
     # git push

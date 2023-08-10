@@ -19,7 +19,7 @@ publishVersion=$6
 echo $originBranch
 echo $sourceBranch
 
-id="$($(dirname "$0")/getName.js ${originRepo} ${sourceRepo})"
+# id="$($(dirname "$0")/getName.js ${originRepo} ${sourceRepo})"
 # filepath=$(cd "$(dirname "$0")"; pwd) # 本地开发使用
 filepath=""
 echo $filepath
@@ -53,6 +53,8 @@ echo "-----delete source dir-----"
 cd $sourceDir && ls | grep -v "^.git$" | xargs -I {} rm -rf {}
 
 cd $workDir
+pwd # 查看当前路径
+git branch # 查看当前分支
 # 若需要更新 npm 版本，运行更新脚本
 if [ $publishVersion ]; then
     node $workDir/scripts/release.js $publishVersion

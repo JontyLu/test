@@ -36,9 +36,9 @@ workDir=`pwd`
 # workDir="/root/app"
 
 #存在工作目录，移除工作目录
-#if [ -d $cacheDir ];then
+# if [ -d $cacheDir ];then
     # rm -rf $cacheDir
-#fi
+# fi
 
 # 重新创建目录
 mkdir -p $cacheDir
@@ -46,7 +46,7 @@ cd $cacheDir
 
 # # 克隆仓库代码
 #git clone -b $originBranch --depth 1 ${originRepo}
-git clone --depth 1 ${sourceRepo}
+git clone -b $sourceBranch --depth 1 ${sourceRepo}
 
 # 删除目标代码的除.git之外的代码
 echo "-----delete source dir-----"
@@ -70,5 +70,9 @@ pwd
 echo "-----ready push to gihub-----"
 cd $sourceDir
 git add .
-git commit -m "feat: init"
+if [ $publishVersion ]; then
+    git commit -m "release: $publishVersion"
+else
+    git commit -m "feat: 版本更新"
+fi
 git push

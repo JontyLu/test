@@ -32,9 +32,7 @@ sourceDir="${sourceRepo#*/}"
 sourceDir="${sourceDir%.*}"
 sourceDir=$workDir/"${sourceDir}"
 
-# workDir=`pwd`
-
-#存在工作目录，移除工作目录
+# 存在工作目录，移除工作目录
 if [ -d $workDir ];then
     rm -rf $workDir
 fi
@@ -43,13 +41,10 @@ fi
 mkdir -p $workDir
 cd $workDir
 
-# # 克隆仓库代码
-git clone -b $originBranch --depth 1 ${originRepo}
-git clone -b $sourceBranch --depth 1 ${sourceRepo}
+###### 源仓库操作 #####
 
-# 删除目标代码的除.git之外的代码
-echo "-----delete source dir-----"
-cd $sourceDir && ls | grep -v "^.git$" | xargs -I {} rm -rf {}
+# 克隆源仓库代码
+git clone -b $originBranch --depth 1 ${originRepo}
 
 cd $originDir
 pwd # 查看当前路径
@@ -60,16 +55,22 @@ tnpm i
 
 # 若需要更新 npm 版本，运行更新脚本
 if [ $publishVersion ]; then
-    node $originDir/scripts/release.js $publishVersion
-    # git add .
-    # git commit -m "feat: npm版本更新$publishVersion"
-    # git push
+    node $originDir/scripts/not-external-release.js $publishVersion
 fi
+
+###### 目标仓库操作 #####
+
+# 克隆目标仓库代码
+cd $workDir
+git clone -b $sourceBranch --depth 1 ${sourceRepo}
+
+# 删除目标代码的除.git之外的代码
+echo "-----delete source dir-----"
+cd $sourceDir && ls | grep -v "^.git$" | xargs -I {} rm -rf {}
+
 # 拷贝原始代码的除 .git 和以 not-external 开头的文件或者文件夹代码到目标代码文件夹
 echo "-----copy origin to source dir-----"
-ls | grep -v "^.git$" | grep -v "^not-external" | grep -v "^node_modules$" | xargs -I {} cp -r {} $sourceDir
-
-pwd
+cd $originDir && ls | grep -v "^.git$" | grep -v "^not-external" | grep -v "^node_modules$" | grep -v "^dist$" | xargs -I {} cp -r {} $sourceDir
 
 # 提交此次 github 变更
 echo "-----ready push to gihub-----"

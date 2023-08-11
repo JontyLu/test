@@ -87,13 +87,13 @@ async function main() {
 
     // build all packages with types
     step('\nBuilding all packages...')
-    // if (!skipBuild && !isDryRun) {
-    //     await run('yarn', ['build', '--release'])
-    //     // test generated dts files
-    //     step('\nVerifying type declarations...')
-    // } else {
-    //     console.log(`(skipped)`)
-    // }
+    if (!skipBuild && !isDryRun) {
+        await run('yarn', ['build', '--release'])
+        // test generated dts files
+        step('\nVerifying type declarations...')
+    } else {
+        console.log(`(skipped)`)
+    }
 
     // generate changelog
     // await run(`yarn`, ['changelog'])

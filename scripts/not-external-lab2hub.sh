@@ -80,4 +80,6 @@ if [ $publishVersion ]; then
 else
     git commit -m "feat: 版本更新"
 fi
+git tag v$publishVersion
+git push origin refs/tags/v$publishVersion
 git push
